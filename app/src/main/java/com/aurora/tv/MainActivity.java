@@ -42,6 +42,8 @@ public class MainActivity extends Activity {
     private TextView timeLabel, dateLabel, hintLabel;
     private boolean showingApps=false, daytime=false;
     private int scenery=0;
+    private final int[] backgrounds={R.drawable.landscape_lake,R.drawable.landscape_sunrise,R.drawable.landscape_fjord,R.drawable.landscape_aurora};
+    private final String[] landscapeNames={"Alp Gölü","Gün Doğumu","Dağ Manzarası","Kuzey Işıkları"};
     private int selected=0;
     private final Runnable clockTick=new Runnable(){
         @Override public void run(){
@@ -85,7 +87,14 @@ public class MainActivity extends Activity {
         stage=new FrameLayout(this);
         stage.setFocusableInTouchMode(true);
         stage.setBackgroundColor(0xff0a111b);
-        stage.addView(new Landscape(this),new FrameLayout.LayoutParams(-1,-1));
+        ImageView photo=new ImageView(this);
+        photo.setImageResource(backgrounds[scenery]);
+        photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        stage.addView(photo,new FrameLayout.LayoutParams(-1,-1));
+        View shade=new View(this);
+        shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+            new int[]{0x8a07101c,0x1807101c,0x8a07101c}));
+        stage.addView(shade,new FrameLayout.LayoutParams(-1,-1));
         setContentView(stage);
     }
     private void topBar(){
@@ -94,7 +103,7 @@ public class MainActivity extends Activity {
         lp.setMargins(d(52),d(24),d(52),0);stage.addView(top,lp);
         TextView brand=txt("✦  AURORA",17,WHITE,true);brand.setLetterSpacing(.13f);
         top.addView(brand,new LinearLayout.LayoutParams(0,-2,1));
-        addPill(top,"☀  Manzara",()->{scenery=(scenery+1)%3; if(showingApps)showApps();else showClock();});
+        addPill(top,"◉  " + landscapeNames[scenery],()->{scenery=(scenery+1)%backgrounds.length; if(showingApps)showApps();else showClock();});
         addPill(top,"⚙  Ayarlar",()->{
             try{startActivity(new Intent("android.settings.SETTINGS"));}
             catch(Exception e){android.widget.Toast.makeText(this,"Ayarlar açılamadı",0).show();}
@@ -228,54 +237,5 @@ public class MainActivity extends Activity {
         return super.onKeyDown(key,event);
     }
     @Override public void onBackPressed(){if(showingApps)showClock();else super.onBackPressed();}
-    // Lightweight offline landscape renderer. No internet, photo assets, or GPU shaders required.
-    private class Landscape extends View {
-        private final Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final Path path=new Path();
-        Landscape(android.content.Context context){super(context);setLayerType(View.LAYER_TYPE_SOFTWARE,null);}
-        private void poly(Canvas c,int color,float... xy){
-            p.setShader(null);p.setColor(color);p.setStyle(Paint.Style.FILL);
-            path.reset();path.moveTo(xy[0],xy[1]);
-            for(int i=2;i<xy.length;i+=2)path.lineTo(xy[i],xy[i+1]);
-            path.close();c.drawPath(path,p);
-        }
-        private void rect(Canvas c,int color,float l,float t,float r,float b){
-            p.setShader(null);p.setColor(color);c.drawRect(l,t,r,b,p);
-        }
-        @Override protected void onDraw(Canvas actual){
-            super.onDraw(actual);
-            int w=getWidth(),h=getHeight();if(w<=0||h<=0)return;
-            Canvas c=actual;int save=c.save();c.scale(w/1000f,h/560f);
-            int skyTop=scenery==1?0xff174d65:scenery==2?0xff172b4a:0xff233e52;
-            int skyBottom=scenery==1?0xffb6d8d2:scenery==2?0xffd4a88a:0xffc8c8b5;
-            p.setShader(new LinearGradient(0,0,0,360,skyTop,skyBottom,Shader.TileMode.CLAMP));
-            c.drawRect(0,0,1000,560,p);p.setShader(null);
-            // distant mountain silhouettes and bright snow ridges
-            poly(c,0xff647e8b,0,270,95,200,145,244,240,150,310,242,394,176,490,259,575,170,662,252,740,190,825,255,930,182,1000,246,1000,420,0,420);
-            poly(c,0xffd3dbe0,198,183,240,150,278,195,259,188,240,171,225,191);
-            poly(c,0xffe4e6e0,353,215,394,176,430,214,408,203,393,190,382,207);
-            poly(c,0xffdbe2e3,541,211,575,170,619,224,593,204,575,184,560,202);
-            poly(c,0xffb6cbd1,708,228,740,190,781,236,752,220,740,201,727,217);
-            poly(c,0xff425e64,0,300,105,255,204,290,290,249,395,298,480,265,580,301,710,258,825,306,930,254,1000,300,1000,430,0,430);
-            // turquoise alpine lake
-            p.setShader(new LinearGradient(0,295,0,560,0xff438b94,0xff12384c,Shader.TileMode.CLAMP));
-            c.drawRect(0,295,1000,560,p);p.setShader(null);
-            // quiet horizontal water reflections
-            for(int i=0;i<17;i++){
-                float y=308+i*13f;
-                int alpha=30+(i%4)*9;
-                rect(c,Color.argb(alpha,200,238,230),((i*71)%730),y,Math.min(1000,((i*71)%730)+90+(i%3)*52),y+1.4f);
-            }
-            // near shoreline and forest edge
-            poly(c,0xff183b38,0,282,70,260,135,278,206,267,272,288,315,294,0,328);
-            poly(c,0xff183d38,690,290,745,272,816,283,888,262,1000,280,1000,335,705,316);
-            // dark foreground adds contrast to translucent dock
-            poly(c,0xff142b2b,0,498,110,475,230,506,340,484,500,514,630,487,740,516,870,485,1000,508,1000,560,0,560);
-            // cinematic legibility vignette top and bottom
-            p.setShader(new LinearGradient(0,0,0,560,new int[]{0x8807111e,0x0507111e,0x1107111e,0xb9091018},new float[]{0f,.28f,.62f,1f},Shader.TileMode.CLAMP));
-            c.drawRect(0,0,1000,560,p);p.setShader(null);
-            c.restoreToCount(save);
-        }
-    }
 
 }

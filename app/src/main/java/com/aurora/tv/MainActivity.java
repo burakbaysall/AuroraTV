@@ -30,11 +30,11 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
     private static final int WHITE = 0xffffffff;
-    private static final int MUTED = 0xffa8b5cc;
+    private static final int MUTED = 0xffb9bec9;
     private LinearLayout hero;
     private TextView heroTitle, heroDescription, heroEyebrow, clock;
     private int accent = 0xff9bc8ff;
-    private final int[] cardColors = {0xff233e61,0xff45315c,0xff254c4b,0xff5c393a,0xff363f66,0xff4b422b};
+    private final int[] cardColors = {0xff222831,0xff222831,0xff222831,0xff222831,0xff222831,0xff222831};
     private final ArrayList<View> focusableCards = new ArrayList<>();
 
     private int dp(float n) { return (int)(n * getResources().getDisplayMetrics().density + .5f); }
@@ -62,9 +62,9 @@ public class MainActivity extends Activity {
 
     private void updateHero(String appName, boolean selected) {
         if (heroTitle == null) return;
-        heroEyebrow.setText(selected ? "READY TO OPEN" : "WELCOME TO YOUR SPACE");
-        heroTitle.setText(selected ? appName : "Your entertainment.\nBeautifully organized.");
-        heroDescription.setText(selected ? "Press OK to open " + appName : "Discover everything you love, all in one place.");
+        heroEyebrow.setText(selected ? "SEÇİLİ UYGULAMA" : "HOŞ GELDİN");
+        heroTitle.setText(selected ? appName : "Tüm uygulamaların. Tek ekranda.");
+        heroDescription.setText(selected ? "Açmak için OK tuşuna bas" : "Kumandanla keşfet, seç ve izle.");
     }
 
     private void render() {
@@ -76,20 +76,20 @@ public class MainActivity extends Activity {
         scroll.setVerticalScrollBarEnabled(false);
         GradientDrawable background = new GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
-                new int[]{0xff152c48,0xff101525,0xff090c16,0xff1a132b});
+                new int[]{0xff1d2534,0xff11151e,0xff090b10,0xff131622});
         scroll.setBackground(background);
         LinearLayout root = vertical();
-        root.setPadding(dp(52),dp(28),dp(52),dp(40));
+        root.setPadding(dp(48),dp(18),dp(48),dp(22));
         scroll.addView(root);
         setContentView(scroll);
 
         LinearLayout header = new LinearLayout(this);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        root.addView(header,new LinearLayout.LayoutParams(-1,dp(42)));
-        TextView logo = label("✦  AURORA",22,WHITE,true);
+        root.addView(header,new LinearLayout.LayoutParams(-1,dp(34)));
+        TextView logo = label("✦  AURORA TV",19,WHITE,true);
         logo.setLetterSpacing(.14f);
         header.addView(logo,new LinearLayout.LayoutParams(0,-2,1));
-        TextView topHint = label("HOME  /  APPS",11,0xff92a8c8,true);
+        TextView topHint = label("ANA EKRAN",11,0xff92a8c8,true);
         topHint.setLetterSpacing(.14f);
         header.addView(topHint);
         clock = label("",17,WHITE,true);
@@ -99,36 +99,36 @@ public class MainActivity extends Activity {
         updateClock();
 
         hero = vertical();
-        hero.setPadding(dp(32),dp(26),dp(32),dp(26));
+        hero.setPadding(dp(27),dp(19),dp(27),dp(16));
         GradientDrawable heroBackground = new GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
-                new int[]{0xff304f7a,0xff263451,0xff38294f});
-        heroBackground.setCornerRadius(dp(22));
+                new int[]{0xff29384c,0xff202c3d,0xff1c2231});
+        heroBackground.setCornerRadius(dp(18));
         hero.setBackground(heroBackground);
-        LinearLayout.LayoutParams heroParams = new LinearLayout.LayoutParams(-1,dp(218));
-        heroParams.topMargin=dp(24);
+        LinearLayout.LayoutParams heroParams = new LinearLayout.LayoutParams(-1,dp(124));
+        heroParams.topMargin=dp(14);
         root.addView(hero,heroParams);
-        heroEyebrow = label("WELCOME TO YOUR SPACE",11,0xffbdd9ff,true);
+        heroEyebrow = label("HOŞ GELDİN",10,0xffb8c9e2,true);
         heroEyebrow.setLetterSpacing(.18f);
         hero.addView(heroEyebrow);
-        heroTitle = label("",34,WHITE,true);
+        heroTitle = label("",25,WHITE,true);
         LinearLayout.LayoutParams headlineParams = new LinearLayout.LayoutParams(-1,-2);
-        headlineParams.topMargin=dp(16);
+        headlineParams.topMargin=dp(8);
         hero.addView(heroTitle,headlineParams);
-        heroDescription = label("",14,0xffd2def0,false);
+        heroDescription = label("",12,0xffd2def0,false);
         LinearLayout.LayoutParams descParams = new LinearLayout.LayoutParams(-1,-2);
-        descParams.topMargin=dp(12);
+        descParams.topMargin=dp(7);
         hero.addView(heroDescription,descParams);
         updateHero("",false);
 
         LinearLayout sectionHeader = new LinearLayout(this);
         sectionHeader.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams sectionParams = new LinearLayout.LayoutParams(-1,dp(64));
-        sectionParams.topMargin=dp(10);
+        LinearLayout.LayoutParams sectionParams = new LinearLayout.LayoutParams(-1,dp(48));
+        sectionParams.topMargin=dp(5);
         root.addView(sectionHeader,sectionParams);
-        TextView sectionTitle = label("Your Apps",22,WHITE,true);
+        TextView sectionTitle = label("Uygulamalar",20,WHITE,true);
         sectionHeader.addView(sectionTitle,new LinearLayout.LayoutParams(0,-2,1));
-        TextView sectionHint = label("USE YOUR REMOTE TO EXPLORE",10,MUTED,true);
+        TextView sectionHint = label("YÖN TUŞLARIYLA GEZİN",10,MUTED,true);
         sectionHint.setLetterSpacing(.1f);
         sectionHeader.addView(sectionHint);
 
@@ -158,17 +158,17 @@ public class MainActivity extends Activity {
             card.setClickable(true);
             card.setClipChildren(false);
             card.setClipToPadding(false);
-            card.setBackground(shape(cardColors[index%cardColors.length],18));
+            card.setBackground(shape(cardColors[index%cardColors.length],19));
             GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams(
                     GridLayout.spec(index/5),GridLayout.spec(index%5));
-            cardParams.width=dp(155);
-            cardParams.height=dp(123);
-            cardParams.setMargins(dp(0),dp(0),dp(13),dp(14));
+            cardParams.width=dp(165);
+            cardParams.height=dp(140);
+            cardParams.setMargins(dp(0),dp(0),dp(12),dp(13));
             grid.addView(card,cardParams);
 
             LinearLayout content = vertical();
             content.setGravity(Gravity.CENTER);
-            content.setPadding(dp(8),dp(12),dp(8),dp(10));
+            content.setPadding(dp(10),dp(10),dp(10),dp(10));
             card.addView(content,new FrameLayout.LayoutParams(-1,-1));
             ImageView icon = new ImageView(this);
             try {
@@ -178,22 +178,22 @@ public class MainActivity extends Activity {
                 icon.setImageResource(android.R.drawable.sym_def_app_icon);
             }
             icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            content.addView(icon,new LinearLayout.LayoutParams(dp(55),dp(55)));
-            TextView appLabel=label(name,13,WHITE,true);
+            content.addView(icon,new LinearLayout.LayoutParams(dp(79),dp(79)));
+            TextView appLabel=label(name,12,WHITE,true);
             appLabel.setGravity(Gravity.CENTER);
             appLabel.setSingleLine(true);
             appLabel.setEllipsize(android.text.TextUtils.TruncateAt.END);
             LinearLayout.LayoutParams appLabelParams = new LinearLayout.LayoutParams(-1,-2);
-            appLabelParams.topMargin=dp(12);
+            appLabelParams.topMargin=dp(8);
             content.addView(appLabel,appLabelParams);
 
             final int cardColor=cardColors[index%cardColors.length];
             card.setOnFocusChangeListener((v,focused)->{
-                v.animate().scaleX(focused?1.075f:1f).scaleY(focused?1.075f:1f)
+                v.animate().scaleX(focused?1.09f:1f).scaleY(focused?1.09f:1f)
                         .setDuration(170).start();
-                v.setElevation(focused?dp(18):dp(2));
-                GradientDrawable tile=shape(focused?lighten(cardColor):cardColor,18);
-                if(focused) tile.setStroke(dp(2),0xffd6e8ff);
+                v.setElevation(focused?dp(22):dp(2));
+                GradientDrawable tile=shape(focused?0xff39485e:cardColor,19);
+                if(focused) tile.setStroke(dp(2),0xfff5f7ff);
                 v.setBackground(tile);
                 if(focused) updateHero(name,true);
             });
@@ -215,15 +215,15 @@ public class MainActivity extends Activity {
             index++;
         }
         if(index==0){
-            TextView empty=label("No Android TV apps found.",16,MUTED,false);
+            TextView empty=label("Android TV uygulaması bulunamadı.",16,MUTED,false);
             root.addView(empty);
         } else {
             focusableCards.get(0).requestFocus();
         }
-        TextView footer=label("AURORA TV   •   PRESS OK TO OPEN AN APP   •   PRESS BACK TO RETURN",10,0xff8597b5,false);
+        TextView footer=label("AURORA TV 3.0   •   OK: AÇ   •   GERİ: DÖN",10,0xff8597b5,false);
         footer.setLetterSpacing(.08f);
         LinearLayout.LayoutParams footerParams=new LinearLayout.LayoutParams(-1,-2);
-        footerParams.topMargin=dp(20);
+        footerParams.topMargin=dp(8);
         root.addView(footer,footerParams);
     }
     private int lighten(int color) {

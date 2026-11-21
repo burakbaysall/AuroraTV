@@ -20,6 +20,17 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '8.9'
+      - name: Bundle four landscape photographs in APK
+        run: |
+          mkdir -p app/src/main/res/drawable-nodpi
+          curl --fail --location --retry 3 --silent --show-error "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1920&h=1080&fit=crop&q=82" -o app/src/main/res/drawable-nodpi/landscape_lake.jpg
+          curl --fail --location --retry 3 --silent --show-error "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=1920&h=1080&fit=crop&q=82" -o app/src/main/res/drawable-nodpi/landscape_sunrise.jpg
+          curl --fail --location --retry 3 --silent --show-error "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&h=1080&fit=crop&q=82" -o app/src/main/res/drawable-nodpi/landscape_fjord.jpg
+          curl --fail --location --retry 3 --silent --show-error "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920&h=1080&fit=crop&q=82" -o app/src/main/res/drawable-nodpi/landscape_aurora.jpg
+          for f in app/src/main/res/drawable-nodpi/*.jpg; do
+            test "$(wc -c < "$f")" -gt 20000 || { echo "Invalid image: $f"; exit 1; }
+            file "$f" | grep -q 'JPEG image data' || { echo "Not a JPEG: $f"; exit 1; }
+          done
       - name: Build debug APK
         run: gradle :app:assembleDebug --no-daemon
       - uses: actions/upload-artifact@v6
